@@ -1,0 +1,10 @@
+pymongo
+requests
+beautifulsoup4
+lxml
+jupyter
+scipy
+matplotlib
+dnspython
+numpy
+pandas
