@@ -1,0 +1,14 @@
+docker network create mongo-net
+
+
+docker build -t recollector-app .
+
+
+# gnews or newsapi, keyword any, FROM (start date), TO (end date), apikey
+
+docker run --network mongo-net -e SOURCE=gnews -e KEYWORD=technology -e FROM=2023-01-01 -e TO=2023-01-31 -e APIKEY=your_api_key_here recollector-app
+
+
+mongo connection string:
+
+mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?replicaSet=rs0

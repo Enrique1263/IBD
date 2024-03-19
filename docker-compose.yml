@@ -17,6 +17,8 @@ services:
       - "mongo1_data:/data/db"
       - "mongo1_config:/data/configdb"
     restart: always
+    networks:
+      - mongo-net
 
   mongo2:
     image: mongo:7.0
@@ -27,6 +29,8 @@ services:
       - "mongo2_data:/data/db"
       - "mongo2_config:/data/configdb"
     restart: always
+    networks:
+      - mongo-net
 
   mongo3:
     image: mongo:7.0
@@ -37,20 +41,24 @@ services:
       - "mongo3_data:/data/db"
       - "mongo3_config:/data/configdb"
     restart: always
+    networks:
+      - mongo-net
 
   starter:
     build: 
       context: .
-      dockerfile: Dockerfile-1
+      dockerfile: starter-image
     depends_on:
       - mongo1
       - mongo2
       - mongo3
+    networks:
+      - mongo-net
 
   jupyter:
     build: 
       context: .
-      dockerfile: Dockerfile
+      dockerfile: jupyter-tester
     ports:
       - '8888:8888'
     volumes:
@@ -59,6 +67,8 @@ services:
       - mongo1
       - mongo2
       - mongo3
+    networks:
+      - mongo-net
     
 
 volumes:
@@ -68,3 +78,7 @@ volumes:
   mongo1_config:
   mongo2_config:
   mongo3_config:
+
+networks:
+  mongo-net:
+    external: true

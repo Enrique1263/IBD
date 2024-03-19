@@ -7,7 +7,7 @@ connection_string = 'mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?replicaSe
 client = pymongo.MongoClient(connection_string)
 
 # Database name
-db_name = 'news'
+db_name = 'newsDB'
 
 # Check if the database exists
 dblist = client.list_database_names()
@@ -18,7 +18,7 @@ if db_name not in dblist:
     db = client[db_name]
     
     # Collections to be created
-    collections = ['politics', 'entertainment', 'economy', 'technology']
+    collections = ['gnews', 'newsapi']
     
     for collection in collections:
         db.create_collection(collection)
