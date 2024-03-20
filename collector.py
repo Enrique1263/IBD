@@ -24,8 +24,18 @@ api_urls = {
 
 # Function to fetch articles from GNews
 def fetch_from_gnews(keyword, from_date, to_date, apikey):
-    response = requests.get(api_urls['gnews'], params={'q': keyword, 'from': from_date, 'to': to_date, 'token': apikey, 'lang': 'en', 'max': 100})
-    return response.json()['articles']
+    try:
+        if keyword == '' and from_date == '' and to_date == '':
+            response = requests.get(api_urls['gnews'], params={'token': apikey, 'lang': 'en', 'max': 100})
+        elif from_date == '' and to_date == '':
+            response = requests.get(api_urls['gnews'], params={'q': keyword, 'token': apikey, 'lang': 'en', 'max': 100})
+        elif keyword == '':
+            response = requests.get(api_urls['gnews'], params={'from': from_date, 'to': to_date, 'token': apikey, 'lang': 'en', 'max': 100})
+        else:
+            response = requests.get(api_urls['gnews'], params={'q': keyword, 'from': from_date, 'to': to_date, 'token': apikey, 'lang': 'en', 'max': 100})
+        return response.json()['articles']
+    except Exception as e:
+        return None
 
 # Function to fetch articles from NewsAPI
 def fetch_from_newsapi(keyword='', from_date='', to_date='', client=None, page = 1):
@@ -40,8 +50,6 @@ def fetch_from_newsapi(keyword='', from_date='', to_date='', client=None, page =
             articles = client.get_everything(q=keyword, from_param=from_date, to=to_date, language='en', sort_by='relevancy', page_size=100, page=page)
         return articles['articles']
     except Exception as e:
-        print(f'API Limit reached, waiting for 1 day')
-        time.sleep(86400)
         return None
 
 def insert_to_mongo(articles):
@@ -73,7 +81,11 @@ def main():
         articles = []
         if source.lower() == 'gnews':
             articles = fetch_from_gnews(keyword, from_date, to_date, apikey)
-            insert_to_mongo(articles)
+            if articles is None:
+                print('API limit reached, waiting for 1 day')
+                time.sleep(86400)
+            else:
+                insert_to_mongo(articles)
         elif source.lower() == 'newsapi':
             news_api_client = NewsApiClient(api_key=apikey)
             articles = fetch_from_newsapi(keyword, from_date, to_date, client=news_api_client, page=page)
