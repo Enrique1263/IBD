@@ -18,7 +18,7 @@ if db_name not in dblist:
     db = client[db_name]
     
     # Collections to be created
-    collections = ['gnews', 'newsapi']
+    collections = ['gnews', 'newsapi', 'newsai']
     
     for collection in collections:
         db.create_collection(collection)
