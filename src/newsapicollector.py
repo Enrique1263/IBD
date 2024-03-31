@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from newsapi import NewsApiClient
 
 def fetch_news(api_keys, keywords, from_date, to_date, language):
+    
     newsapi = NewsApiClient(api_key=api_keys[0])
     final_articles = {keyword: [] for keyword in keywords}
     for keyword in keywords:
