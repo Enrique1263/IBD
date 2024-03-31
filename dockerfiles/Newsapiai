@@ -1,0 +1,7 @@
+FROM python:3.8-slim
+
+RUN pip install eventregistry
+
+COPY ./src/newsapiaicollector.py /app/newsapiaicollector.py
+
+CMD ["python", "-u", "/app/newsapiaicollector.py"]
