@@ -1,11 +1,21 @@
 import os
 from dotenv import load_dotenv
+import pymongo
 from newsapi import NewsApiClient
 
 def fetch_news(api_keys, keywords, from_date, to_date, language):
+    connection_string = 'mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?replicaSet=rs0'
+    client = pymongo.MongoClient(connection_string)
+    db_name = 'newsDB'
+    collection_name = 'newsapi'
+    col = client[db_name][collection_name]
+
     newsapi = NewsApiClient(api_key=api_keys[0])
-    final_articles = {keyword: [] for keyword in keywords}
+    used_keys = []
     for keyword in keywords:
+        if len(used_keys) == len(api_keys):
+            print('All API keys used up')
+            break
         page = 1
         while True:
             try:
@@ -15,13 +25,18 @@ def fetch_news(api_keys, keywords, from_date, to_date, language):
                                                 language=language,
                                                 page=page)
                 if response['status'] == 'ok':
-                    final_articles[keyword] += response['articles']
+                    articles_to_insert = response['articles']
+                    col.insert_many(articles_to_insert)
                     page += 1
             except Exception as e:
                 e = dict(e.args[0])
                 if e['code'] == 'rateLimited':
-                    print('Rate limited, switching to next API key')
                     api_keys.append(api_keys.pop(0))
+                    used_keys.append(api_keys[-1])
+                    if len(used_keys) == len(api_keys):
+                        break
+                    else:
+                        print('Rate limited, switching to next API key')
                     newsapi = NewsApiClient(api_key=api_keys[0])
 
                 elif e['code'] == 'maximumResultsReached':
@@ -30,8 +45,9 @@ def fetch_news(api_keys, keywords, from_date, to_date, language):
                 else:
                     print('Unknown error: ', e)
                     break
+    client.close()
+
     
-    return final_articles
 
 if __name__ == '__main__':
     load_dotenv()
