@@ -7,7 +7,7 @@ import time
 from datetime import datetime, timedelta
 
 def fetch_news_gnews(api_keys, keywords, from_date, to_date, language):
-    connection_string = 'mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?replicaSet=rs0'
+    connection_string = os.getenv('CONNECTIONSTRING')
     client = pymongo.MongoClient(connection_string)
     db_name = 'newsDB'
     collection_name = 'gnews'
