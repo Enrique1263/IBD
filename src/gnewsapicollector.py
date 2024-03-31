@@ -10,7 +10,7 @@ def fetch_news_gnews(api_keys, keywords, from_date, to_date, language):
     connection_string = 'mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?replicaSet=rs0'
     client = pymongo.MongoClient(connection_string)
     db_name = 'newsDB'
-    collection_name = 'newsapi'
+    collection_name = 'gnews'
     col = client[db_name][collection_name]
     used_keys = []
     # Split date range into smaller segments (e.g., daily)
