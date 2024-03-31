@@ -56,6 +56,4 @@ if __name__ == '__main__':
     from_date = os.getenv('FROM')
     to_date = os.getenv('TO')
     language = os.getenv('LANGUAGE')
-    articles = fetch_news(api_keys, keywords, from_date, to_date, language)
-    print(len(set([article['url'] for keyword in articles for article in articles[keyword]])))
-    # print(articles)
+    fetch_news(api_keys, keywords, from_date, to_date, language)
