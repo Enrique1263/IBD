@@ -1,0 +1,7 @@
+FROM python:3.8-slim
+
+RUN pip install requests
+
+COPY ./src/gnewsapicollector.py /app/gnewsapicollector.py
+
+CMD ["python", "-u", "/app/gnewsapicollector.py"]
