@@ -3,4 +3,4 @@
 testing-notebooks/
 .env
 
-*/mongo*/
+.mongo*/*
