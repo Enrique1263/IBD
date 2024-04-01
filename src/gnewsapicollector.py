@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv
 import pymongo
 import requests
 import json
@@ -50,7 +49,6 @@ def fetch_news_gnews(api_keys, keywords, from_date, to_date, language):
     client.close()
 
 if __name__ == '__main__':
-    load_dotenv()
     api_keys = os.getenv('GNEWSAPIKEY').split(',')
     keywords = os.getenv('GNEWSTOPICS').split(',')
     from_date = os.getenv('FROM')

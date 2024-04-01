@@ -1,7 +1,6 @@
 import os
 import datetime
 from eventregistry import EventRegistry, QueryArticles, RequestArticlesInfo
-from dotenv import load_dotenv
 import pymongo
 
 
@@ -70,7 +69,6 @@ def fetch_news_newasai(api_keys, keywords, from_date, to_date, language):
     client.close()
 
 if __name__ == '__main__':
-    load_dotenv()
     api_keys = os.getenv('NEWSAPIAIKEY').split(',')
     keywords = os.getenv('NEWSAPIAITOPICS').split(',')
     from_date = os.getenv('FROM')

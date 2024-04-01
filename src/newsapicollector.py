@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv
 import pymongo
 from newsapi import NewsApiClient
 
@@ -50,7 +49,6 @@ def fetch_news(api_keys, keywords, from_date, to_date, language):
     
 
 if __name__ == '__main__':
-    load_dotenv()
     api_keys = os.getenv('NEWSAPIKEY').split(',')
     keywords = os.getenv('NEWSTOPICS').split(',')
     from_date = os.getenv('FROM')
