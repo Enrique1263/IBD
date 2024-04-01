@@ -3,6 +3,4 @@
 testing-notebooks/
 .env
 
-./mongo1_data/.mongodb/mongosh/
-./mongo2_data/.mongodb/mongosh/
-./mongo3_data/.mongodb/mongosh/
+*/mongo*/

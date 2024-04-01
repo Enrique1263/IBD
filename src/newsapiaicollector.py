@@ -38,12 +38,9 @@ def fetch_news_newasai(api_keys, keywords, from_date, to_date, language):
     i = 0
     
     for topic in keywords:
-        to_ignore = keywords.copy()
-        to_ignore.remove(topic)
         er = EventRegistry(apiKey=api_keys[0])
         q = QueryArticles(keywords=topic, 
                         lang=language,
-                        ignoreKeywords=to_ignore,
                         dateStart=start_date,
                         dateEnd=end_date,
                         isDuplicateFilter="skipDuplicates"
@@ -53,19 +50,23 @@ def fetch_news_newasai(api_keys, keywords, from_date, to_date, language):
         response = er.execQuery(q)
         if 'articles' in response:
             articles.extend(response['articles']['results']) 
-        
+        print(f'Processed {topic}')
         i += 1
         if i % topics_per_key == 0:
             i = 0
             api_keys.append(api_keys.pop(0))
             print('Switching to next API key...')
         
+    
     connection_string = os.getenv('CONNECTIONSTRING')
     client = pymongo.MongoClient(connection_string)
     db_name = 'newsDB'
     collection_name = 'newsai'
     col = client[db_name][collection_name]
-    col.insert_many(articles)
+    if len(articles) == 0:
+        print('No articles found')
+    else:
+        col.insert_many(articles)
     client.close()
 
 if __name__ == '__main__':

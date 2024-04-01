@@ -25,7 +25,10 @@ def fetch_news(api_keys, keywords, from_date, to_date, language):
                                                 page=page)
                 if response['status'] == 'ok':
                     articles_to_insert = response['articles']
-                    col.insert_many(articles_to_insert)
+                    if len(articles_to_insert) == 0:
+                        print('No articles found')
+                    else:
+                        col.insert_many(articles_to_insert)
                     page += 1
             except Exception as e:
                 e = dict(e.args[0])

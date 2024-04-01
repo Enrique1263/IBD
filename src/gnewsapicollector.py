@@ -32,8 +32,12 @@ def fetch_news_gnews(api_keys, keywords, from_date, to_date, language):
             
             if code == 200:
                 articles_to_insert =  response['articles']
-                col.insert_many(articles_to_insert)
-                print(f'Processed {keyword} for {from_date_segment}')
+                if len(articles_to_insert) == 0:
+                    print(f'No articles found for {keyword} on {from_date_segment}')
+                    continue
+                else:
+                    col.insert_many(articles_to_insert)
+                    print(f'Processed {keyword} for {from_date_segment}')
             elif code == 403:
                 print('Rate limited, switching to next API key')
                 api_keys.append(api_keys.pop(0))  # Rotate API keys
