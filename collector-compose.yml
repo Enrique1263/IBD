@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  newsapi-collector:
+    image: vramososuna/newsapi:latest
+    container_name: newsapi-collector
+    networks:
+      - mongo-net
+    env_file:
+      - .env
+  
+  gnews-collector:
+    image: vramososuna/gnews:latest
+    container_name: gnews-collector
+    networks:
+      - mongo-net
+    env_file:
+      - .env
+
+  newsapiai-collector:
+    image: vramososuna/newsapiai:latest
+    container_name: newsapiai-collector
+    networks:
+      - mongo-net
+    env_file:
+      - .env
+    
+networks:
+  mongo-net:
+    external: true
