@@ -15,7 +15,7 @@ def fetch_news_newasai(api_keys, keywords, from_date, to_date, language):
     :param language: Language code for the articles (e.g., 'eng' for English)
     :return: A list of articles
     """
-    CALLS_PER_KEY = 50
+    CALLS_PER_KEY = int(os.getenv('NEWSAPIAICALLSPERKEY'))
     NUM_KEYS = len(api_keys)
     NUM_TOPICS = len(keywords)
     topics_per_key = NUM_TOPICS // NUM_KEYS # debe ser entera

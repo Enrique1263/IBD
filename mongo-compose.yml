@@ -54,9 +54,7 @@ services:
       - mongo-net
 
   jupyter:
-    build: 
-      context: .
-      dockerfile: jupyter-tester
+    image: vramososuna/jupyter-mongo:latest
     ports:
       - '8888:8888'
     volumes:
