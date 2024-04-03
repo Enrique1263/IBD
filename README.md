@@ -14,7 +14,6 @@ To enhance accessibility, this project is supported by containerization. The str
 - **requirements.txt**: Lists dependencies required for code execution.
 - **src**: Contains various .py files utilized by the images.
 - **.env**: Safely stores API keys to prevent exposure in the code.
-- **commands.txt**: Houses useful Docker deployment commands.
 
 While it's feasible to run this system on a single machine, utilizing a cluster of machines is recommended to accommodate scalability. For this project, Docker's macvlan approach facilitates scalability.
 
@@ -22,7 +21,7 @@ While it's feasible to run this system on a single machine, utilizing a cluster 
 
 Leveraging the RESTful nature of news APIs, data is acquired in JSON format, enabling seamless integration with MongoDB. Data scalability is achieved through multiple APIs and API keys, facilitating concurrent requests and higher request rates. Data availability is contingent upon API uptime.
 
-With MongoDB, data management is delegated to the database, necessitating sufficient replicas to match the pace of API data retrieval. Data retrieval can be facilitated using MongoDB interfaces such as Compass or Python library pymongo.
+With MongoDB, data management is delegated to the database, necessitating sufficient replicas to match the pace of API data retrieval. Data retrieval can be facilitated using MongoDB interfaces such as Compass or Python library pymongo. The way 
 
 ## Big Data Dimensions
 
@@ -33,3 +32,26 @@ Considering the 5 V's of Big Data:
 - **Variety**: While sacrificing variety, data uniformity is maintained as APIs adhere to a consistent structure, streamlining data processing.
 - **Veracity**: The credibility of data sourced from news articles ensures high data reliability.
 - **Value**: The collected data is versatile, serving as a valuable resource for diverse applications beyond database population.
+
+## Commands
+
+Useful Docker deployment commands:
+
+- docker network create mongo-net
+- docker build -t recollector-app .
+###### gnews or newsapi, keyword any, FROM (start date), TO (end date), apikey
+- docker run --network mongo-net -e SOURCE=gnews -e KEYWORD=technology -e FROM=2023-01-01 -e TO=2023-01-31 -e 
+  APIKEY=your_api_key_here recollector-app
+  
+mongo connection string:
+- mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?replicaSet=rs0
+
+----
+From Docker Hub https://hub.docker.com/search?q=vramososuna use:
+
+- docker pull vramososuna/mongo-starter
+- docker pull vramososuna/mongo-raw-extractor
+- docker pull vramososuna/newsapiai
+- docker pull vramososuna/gnews
+- docker pull vramososuna/newsapi
+
