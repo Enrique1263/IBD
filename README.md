@@ -14,6 +14,7 @@ To enhance accessibility, this project is supported by containerization. The str
 - **requirements.txt**: Lists dependencies required for code execution.
 - **src**: Contains various .py files utilized by the images.
 - **.env (MUST BE CREATED BY THE USER FOLLOWING .env.example)**: Safely stores API keys to prevent exposure in the code. Can be modified by the user to select topics as well as timeframe for the extraction. Language determines the language of the articles and newsapi-ai tokes per api indicates teh number of call allows per apikey of that API. 
+- **notebooks**: Jupyter notebook files are saved here.
 
 While it's feasible to run this system on a single machine, utilizing a cluster of machines is recommended to accommodate scalability. For this project docker swarm was contemplated, but difficulty in node connections forced us to reduce the scale to one node.
 
