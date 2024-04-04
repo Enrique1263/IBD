@@ -8,12 +8,12 @@ The primary objective of this project is to establish a robust news aggregation 
 
 To enhance accessibility, this project is supported by containerization. The structural components include:
 
-- **Dockerfile**: Used to build images executing Python code for each API, necessitating one image per API.
-- **docker-compose.yml (Collector)**: Creates containers for news collection, with one container per API image.
-- **docker-compose.yml (MongoDB)**: Orchestrates containers for the MongoDB database.
+- **dockerfiles**: Contains various dockerfiles utilized by the containers in case dockerhub is down.
+- **collector-compose.yml (Collector)**: Creates containers for news collection, with one container per API image. A replicaset of 3 mongodb instances. Also includes a jupyter notebook container to run commands in the replica-set if needed (as well as testing).
+- **mongo-compose.yml (MongoDB)**: Orchestrates containers for the MongoDB database.
 - **requirements.txt**: Lists dependencies required for code execution.
 - **src**: Contains various .py files utilized by the images.
-- **.env**: Safely stores API keys to prevent exposure in the code.
+- **.env (MUST BE CREATED BY THE USER FOLLOWING .env.example)**: Safely stores API keys to prevent exposure in the code. Can be modified by the user to select topics as well as timeframe for the extraction. Language determines teh language of the articles and newsapi-ai tokes per api indicates teh number of call allows per apikey of that API. 
 
 While it's feasible to run this system on a single machine, utilizing a cluster of machines is recommended to accommodate scalability. For this project, Docker's macvlan approach facilitates scalability.
 
@@ -27,7 +27,7 @@ With MongoDB, data management is delegated to the database, necessitating suffic
 
 Considering the 5 V's of Big Data:
 
-- **Volume**: MongoDB's storage capacity enables handling extensive data volumes, with scalability options.
+- **Volume**: MongoDB's storage capacity enables handling extensive data volumes, with scalability options (Can be adapted to great volumnes of data).
 - **Velocity**: Multi-API data collection allows for high-speed data acquisition, subject to API daily limits (more keys, more data).
 - **Variety**: While sacrificing variety, data uniformity is maintained as APIs adhere to a consistent structure, streamlining data processing.
 - **Veracity**: The credibility of data sourced from news articles ensures high data reliability.
@@ -36,15 +36,14 @@ Considering the 5 V's of Big Data:
 ## Commands
 
 Useful Docker deployment commands:
-
+#### Initiate communication network for the whole infrastructure
 - docker network create mongo-net
-- docker build -t recollector-app .
-###### gnews or newsapi, keyword any, FROM (start date), TO (end date), apikey
-- docker run --network mongo-net -e SOURCE=gnews -e KEYWORD=technology -e FROM=2023-01-01 -e TO=2023-01-31 -e 
-  APIKEY=your_api_key_here recollector-app
-  
-mongo connection string:
-- mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?replicaSet=rs0
+#### Initiate mongo replica-set
+- docker compose -f mongo-compose.yml
+#### Initiate news collectors (mongo replica-set must be healthy)
+- docker compose -f mongo-compose.yml
+#### Extract raw json data from the replica-set
+- docker run -f --env-file ./.env --network mongo-net --name raw-collector vramososuna/mongo-raw-extractor
 
 ----
 From Docker Hub https://hub.docker.com/search?q=vramososuna use:
