@@ -12,7 +12,7 @@ RUN apt-get update && \
 WORKDIR /app
 
 # Copy the requirements file and install the dependencies
-COPY starter.py .
+COPY ./src/starter.py .
 RUN pip install --upgrade pip
 RUN pip install pymongo
 
