@@ -8,20 +8,20 @@ The primary objective of this project is to establish a robust news aggregation 
 
 To enhance accessibility, this project is supported by containerization. The structural components include:
 
-- **dockerfiles**: Contains various dockerfiles utilized by the containers in case dockerhub is down.
+- **dockerfiles**: Contains various dockerfiles utilized by the containers in case Docker Hub is down.
 - **collector-compose.yml (Collector)**: Creates containers for news collection, with one container per API image.
 - **mongo-compose.yml (MongoDB)**: Orchestrates containers for the MongoDB database. A replicaset of 3 mongodb instances. Also includes a jupyter notebook container to run commands in the replica-set if needed (as well as testing).
 - **requirements.txt**: Lists dependencies required for code execution.
 - **src**: Contains various .py files utilized by the images.
 - **.env (MUST BE CREATED BY THE USER FOLLOWING .env.example)**: Safely stores API keys to prevent exposure in the code. Can be modified by the user to select topics as well as timeframe for the extraction. Language determines the language of the articles and newsapi-ai tokes per api indicates teh number of call allows per apikey of that API. 
 
-While it's feasible to run this system on a single machine, utilizing a cluster of machines is recommended to accommodate scalability. For this project, Docker's macvlan approach facilitates scalability.
+While it's feasible to run this system on a single machine, utilizing a cluster of machines is recommended to accommodate scalability. For this project docker swarm was contemplated, but difficulty in node connections forced us to reduce the scale to one node.
 
 ## Data
 
 Leveraging the RESTful nature of news APIs, data is acquired in JSON format, enabling seamless integration with MongoDB. Data scalability is achieved through multiple APIs and API keys, facilitating concurrent requests and higher request rates. Data availability is contingent upon API uptime.
 
-With MongoDB, data management is delegated to the database, necessitating sufficient replicas to match the pace of API data retrieval. Data retrieval can be facilitated using MongoDB interfaces such as Compass or Python library pymongo. The way 
+With MongoDB, data management is delegated to the database, necessitating sufficient replicas to match the pace of API data retrieval. Data retrieval can be facilitated using MongoDB interfaces such as Compass or Python library pymongo.  
 
 ## Big Data Dimensions
 
@@ -46,14 +46,14 @@ Useful Docker deployment commands:
 - docker run -f --env-file ./.env --network mongo-net --name raw-collector vramososuna/mongo-raw-extractor
 
 ----
-From Docker Hub https://hub.docker.com/search?q=vramososuna use:
+From Docker Hub https://hub.docker.com/search?q=vramososuna these images are used:
 
-- docker pull vramososuna/mongo-starter
-- docker pull vramososuna/mongo-raw-extractor
-- docker pull vramososuna/newsapiai
-- docker pull vramososuna/gnews
-- docker pull vramososuna/newsapi
-- docker pull vramososuna/jupyter-mongo
+- vramososuna/mongo-starter
+- vramososuna/mongo-raw-extractor
+- vramososuna/newsapiai
+- vramososuna/gnews
+- vramososuna/newsapi
+- vramososuna/jupyter-mongo
 
 ## Functionability
 
