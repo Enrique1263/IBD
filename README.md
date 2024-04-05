@@ -28,7 +28,7 @@ With MongoDB, data management is delegated to the database, necessitating suffic
 
 Considering the 5 V's of Big Data:
 
-- **Volume**: MongoDB's storage capacity enables handling extensive data volumes, with scalability options (Can be adapted to great volumnes of data).
+- **Volume**: MongoDB's storage capacity enables handling extensive data volumes, with scalability options (Can be adapted to great volumes of data).
 - **Velocity**: Multi-API data collection allows for high-speed data acquisition, subject to API daily limits (more keys, more data).
 - **Variety**: While sacrificing variety, data uniformity is maintained as APIs adhere to a consistent structure, streamlining data processing.
 - **Veracity**: The credibility of data sourced from news articles ensures high data reliability.
