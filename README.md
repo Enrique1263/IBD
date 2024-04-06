@@ -40,11 +40,11 @@ Useful Docker deployment commands:
 #### Initiate communication network for the whole infrastructure
 - docker network create mongo-net
 #### Initiate mongo replica-set
-- docker compose -f mongo-compose.yml
+- docker compose -f mongo-compose.yml up
 #### Initiate news collectors (mongo replica-set must be healthy)
-- docker compose -f mongo-compose.yml
+- docker compose -f collector-compose.yml up
 #### Extract raw json data from the replica-set
-- docker run -f --env-file ./.env --network mongo-net --name raw-collector vramososuna/mongo-raw-extractor
+- docker run --env-file ./.env --network mongo-net --name raw-collector vramososuna/mongo-raw-extractor
 
 ----
 From Docker Hub https://hub.docker.com/search?q=vramososuna these images are used:
