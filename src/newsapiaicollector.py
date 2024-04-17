@@ -2,6 +2,7 @@ import os
 import datetime
 from eventregistry import EventRegistry, QueryArticles, RequestArticlesInfo
 import pymongo
+import json
 
 
 def fetch_news_newasai(api_keys, keywords, from_date, to_date, language):
@@ -67,6 +68,9 @@ def fetch_news_newasai(api_keys, keywords, from_date, to_date, language):
         print('No articles found')
     else:
         col.insert_many(articles)
+        file_name = f"./data/{collection_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json"
+        with open(file_name, 'w') as file:
+            json.dump(articles, file, default=str, indent=4)
     client.close()
 
 if __name__ == '__main__':

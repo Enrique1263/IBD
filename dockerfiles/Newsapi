@@ -4,4 +4,6 @@ RUN pip install newsapi-python pymongo
 
 COPY ./src/newsapicollector.py /app/newsapicollector.py
 
+RUN mkdir /app/data
+
 CMD ["python", "-u", "/app/newsapicollector.py"]

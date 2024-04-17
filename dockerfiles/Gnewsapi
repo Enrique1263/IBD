@@ -2,6 +2,8 @@ FROM python:3.8-slim
 
 RUN pip install requests pymongo
 
-COPY ./src/gnewsapicollector.py /app/gnewsapicollector.py
+COPY ../src/gnewsapicollector.py /app/gnewsapicollector.py
+
+RUN mkdir /app/data
 
 CMD ["python", "-u", "/app/gnewsapicollector.py"]

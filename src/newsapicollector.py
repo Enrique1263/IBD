@@ -1,6 +1,8 @@
 import os
 import pymongo
 from newsapi import NewsApiClient
+import json
+from datetime import datetime
 
 def fetch_news(api_keys, keywords, from_date, to_date, language):
     connection_string = os.getenv('CONNECTIONSTRING')
@@ -8,6 +10,8 @@ def fetch_news(api_keys, keywords, from_date, to_date, language):
     db_name = 'newsDB'
     collection_name = 'newsapi'
     col = client[db_name][collection_name]
+
+    total_articles = []
 
     newsapi = NewsApiClient(api_key=api_keys[0])
     used_keys = []
@@ -29,6 +33,7 @@ def fetch_news(api_keys, keywords, from_date, to_date, language):
                         print('No articles found')
                     else:
                         col.insert_many(articles_to_insert)
+                        total_articles.extend(articles_to_insert)
                     page += 1
             except Exception as e:
                 e = dict(e.args[0])
@@ -47,6 +52,11 @@ def fetch_news(api_keys, keywords, from_date, to_date, language):
                 else:
                     print('Unknown error: ', e)
                     break
+
+    file_name = f"./data/{collection_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json"
+    with open(file_name, 'w') as file:
+        json.dump(total_articles, file, default=str, indent=4)
+        
     client.close()
 
     

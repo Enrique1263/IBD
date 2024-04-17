@@ -4,4 +4,6 @@ RUN pip install eventregistry pymongo
 
 COPY ./src/newsapiaicollector.py /app/newsapiaicollector.py
 
+RUN mkdir /app/data
+
 CMD ["python", "-u", "/app/newsapiaicollector.py"]

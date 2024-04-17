@@ -16,6 +16,8 @@ def fetch_news_gnews(api_keys, keywords, from_date, to_date, language):
     start_date = datetime.strptime(from_date, "%Y-%m-%d")
     end_date = datetime.strptime(to_date, "%Y-%m-%d")
     delta = timedelta(days=1)  # Adjust as needed
+
+    total_articles = []
     
     while start_date <= end_date:
         from_date_segment = start_date.strftime("%Y-%m-%d") + 'T00:00:00Z'
@@ -36,6 +38,7 @@ def fetch_news_gnews(api_keys, keywords, from_date, to_date, language):
                     print(f'No articles found for {keyword} on {from_date_segment}')
                     continue
                 else:
+                    total_articles.extend(articles_to_insert)
                     col.insert_many(articles_to_insert)
                     print(f'Processed {keyword} for {from_date_segment}')
             elif code == 403:
@@ -49,6 +52,10 @@ def fetch_news_gnews(api_keys, keywords, from_date, to_date, language):
             time.sleep(1)  # Be respectful in your request pacing
         
         start_date += delta  # Move to the next segment
+
+    file_name = f"./data/{collection_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json"
+    with open(file_name, 'w') as file:
+        json.dump(total_articles, file, default=str, indent=4)
     
     client.close()
 
