@@ -9,7 +9,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data/newsapi:/data  # Almacena datos en el host
+      - ./data/newsapi:app//data  # Almacena datos en el host
 
   gnews-collector:
     image: vramososuna/gnews:latest
@@ -19,7 +19,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data/gnews:/data  # Almacena datos en el host
+      - ./data/gnews:app/data  # Almacena datos en el host
 
   newsapiai-collector:
     image: vramososuna/newsapiai:latest
@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data/newsapiai:/data  # Almacena datos en el host
+      - ./data/newsapiai:app/data  # Almacena datos en el host
     
 networks:
   mongo-net:
