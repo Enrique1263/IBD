@@ -8,7 +8,9 @@ services:
       - mongo-net
     env_file:
       - .env
-  
+    volumes:
+      - ./data/newsapi:/data  # Almacena datos en el host
+
   gnews-collector:
     image: vramososuna/gnews:latest
     container_name: gnews-collector
@@ -16,6 +18,8 @@ services:
       - mongo-net
     env_file:
       - .env
+    volumes:
+      - ./data/gnews:/data  # Almacena datos en el host
 
   newsapiai-collector:
     image: vramososuna/newsapiai:latest
@@ -24,6 +28,8 @@ services:
       - mongo-net
     env_file:
       - .env
+    volumes:
+      - ./data/newsapiai:/data  # Almacena datos en el host
     
 networks:
   mongo-net:
