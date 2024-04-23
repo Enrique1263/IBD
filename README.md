@@ -34,7 +34,7 @@ Considering the 5 V's of Big Data:
 - **Veracity**: The credibility of data sourced from news articles ensures high data reliability.
 - **Value**: The collected data is versatile, serving as a valuable resource for diverse applications beyond database population.
 
-## Commands
+## Commands & Use
 
 Useful Docker deployment commands:
 #### Initiate communication network for the whole infrastructure
@@ -45,6 +45,8 @@ Useful Docker deployment commands:
 - docker compose -f collector-compose.yml up
 #### Extract raw json data from the replica-set
 - docker run --env-file ./.env --network mongo-net --name raw-collector vramososuna/mongo-raw-extractor
+#### If an image is to be created for some reason
+- docker build -f 'path/to/file' -t 'corresponding name from bellow' .
 
 ----
 From Docker Hub https://hub.docker.com/search?q=vramososuna these images are used:
@@ -55,6 +57,10 @@ From Docker Hub https://hub.docker.com/search?q=vramososuna these images are use
 - vramososuna/gnews
 - vramososuna/newsapi
 - vramososuna/jupyter-mongo
+
+#### Usage
+In order to correctly run this application you will need to create an .env file that uses the same extructure as described in the .env.example file.
+(It is recommended for the _newsapiaitopics_ to be a number of topics divisible by the number of api keys you have).
 
 ## Functionability
 
