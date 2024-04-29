@@ -2,34 +2,34 @@ version: "3.8"
 
 services:
   newsapi-collector:
-    image: vramososuna/newsapi:latest
+    image: vramososuna/newsapi
     container_name: newsapi-collector
     networks:
       - mongo-net
     env_file:
       - .env
     volumes:
-      - ./data/newsapi:app//data  # Almacena datos en el host
+      - ./data/newsapi:/app/data/  # Almacena datos en el host
 
   gnews-collector:
-    image: vramososuna/gnews:latest
+    image: vramososuna/gnews
     container_name: gnews-collector
     networks:
       - mongo-net
     env_file:
       - .env
     volumes:
-      - ./data/gnews:app/data  # Almacena datos en el host
+      - ./data/gnews:/app/data/  # Almacena datos en el host
 
   newsapiai-collector:
-    image: vramososuna/newsapiai:latest
+    image: vramososuna/newsapiai
     container_name: newsapiai-collector
     networks:
       - mongo-net
     env_file:
       - .env
     volumes:
-      - ./data/newsapiai:app/data  # Almacena datos en el host
+      - ./data/newsapiai:/app/data/  # Almacena datos en el host
     
 networks:
   mongo-net:

@@ -54,8 +54,11 @@ def fetch_news_gnews(api_keys, keywords, from_date, to_date, language):
         start_date += delta  # Move to the next segment
 
     file_name = f"./data/{collection_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json"
+    # Save the articles to a file, create a new file for each run
     with open(file_name, 'w') as file:
-        json.dump(total_articles, file, default=str, indent=4)
+        for article in total_articles:
+            file.write(json.dumps(article, default=str))
+            file.write('\n')
     
     client.close()
 
