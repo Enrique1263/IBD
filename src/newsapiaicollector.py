@@ -1,5 +1,5 @@
 import os
-import datetime
+from datetime import datetime
 from eventregistry import EventRegistry, QueryArticles, RequestArticlesInfo
 import pymongo
 import json
@@ -30,8 +30,8 @@ def fetch_news_newasai(api_keys, keywords, from_date, to_date, language):
 
     
     articles = []
-    start_date = datetime.datetime.strptime(from_date, "%Y-%m-%d")
-    end_date = datetime.datetime.strptime(to_date, "%Y-%m-%d")
+    start_date = datetime.strptime(from_date, "%Y-%m-%d")
+    end_date = datetime.strptime(to_date, "%Y-%m-%d")
     
     used_keys = []
 
@@ -68,9 +68,12 @@ def fetch_news_newasai(api_keys, keywords, from_date, to_date, language):
         print('No articles found')
     else:
         col.insert_many(articles)
-        file_name = f"./data/{collection_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json"
+        file_name = f"/app/data/{collection_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json"
         with open(file_name, 'w') as file:
-            json.dump(articles, file, default=str, indent=4)
+            for article in articles:
+                file.write(json.dump(article, file, default=str))
+                file.write('\n')
+
     client.close()
 
 if __name__ == '__main__':
