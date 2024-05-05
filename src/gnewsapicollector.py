@@ -57,7 +57,7 @@ def fetch_news_gnews(api_keys, keywords, from_date, to_date, language):
     # Save the articles to a file, create a new file for each run
     with open(file_name, 'w') as file:
         for article in total_articles:
-            file.write(json.dump(article, file, default=str))
+            json.dump(article, file, default=str)
             file.write('\n')
     
     client.close()

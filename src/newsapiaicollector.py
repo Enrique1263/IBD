@@ -71,7 +71,7 @@ def fetch_news_newasai(api_keys, keywords, from_date, to_date, language):
         file_name = f"/app/data/{collection_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json"
         with open(file_name, 'w') as file:
             for article in articles:
-                file.write(json.dump(article, file, default=str))
+                json.dump(article, file, default=str)
                 file.write('\n')
 
     client.close()
