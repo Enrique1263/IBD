@@ -1,6 +1,6 @@
 FROM python:3.8-slim
 
-RUN pip install eventregistry pymongo
+RUN pip install eventregistry 
 
 COPY ./src/newsapiaicollector.py /app/newsapiaicollector.py
 

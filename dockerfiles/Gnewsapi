@@ -1,6 +1,6 @@
 FROM python:3.8-slim
 
-RUN pip install requests pymongo
+RUN pip install requests 
 
 COPY ../src/gnewsapicollector.py /app/gnewsapicollector.py
 

@@ -1,6 +1,6 @@
 FROM python:3.8-slim
 
-RUN pip install newsapi-python pymongo
+RUN pip install newsapi-python 
 
 COPY ./src/newsapicollector.py /app/newsapicollector.py
 

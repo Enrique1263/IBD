@@ -1,0 +1,23 @@
+PARA MONGO en caso de newsapiai no hay description, se pone a null y en streamlit se pondrá los primeros caracteres
+
+{
+    'source': 'El Pais',
+    'url': 'http://www.elpais.com',
+    'image': 'http://www.elpais.com',
+    'title': 'El que sea',
+    'description': 'El que sea',
+    'author': 'El que sea',
+    'date': 'El que sea',
+    'content': 'El que sea',
+    'api': 'El que sea',
+
+}
+
+PARA MILVUS
+
+{
+    'url': 'http://www.elpais.com',
+    'title': 'El que sea',
+    'description': 'El que sea',
+
+}

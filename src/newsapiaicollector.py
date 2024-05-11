@@ -1,7 +1,6 @@
 import os
 from datetime import datetime
 from eventregistry import EventRegistry, QueryArticles, RequestArticlesInfo
-import pymongo
 import json
 
 
@@ -59,22 +58,16 @@ def fetch_news_newasai(api_keys, keywords, from_date, to_date, language):
             print('Switching to next API key...')
         
     
-    connection_string = os.getenv('CONNECTIONSTRING')
-    client = pymongo.MongoClient(connection_string)
-    db_name = 'newsDB'
-    collection_name = 'newsai'
-    col = client[db_name][collection_name]
     if len(articles) == 0:
         print('No articles found')
     else:
-        col.insert_many(articles)
-        file_name = f"/app/data/{collection_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json"
+        file_name = f"/app/data/newsapiai/newsai_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json"
         with open(file_name, 'w') as file:
             for article in articles:
                 json.dump(article, file, default=str)
                 file.write('\n')
 
-    client.close()
+
 
 if __name__ == '__main__':
     api_keys = os.getenv('NEWSAPIAIKEY').split(',')
