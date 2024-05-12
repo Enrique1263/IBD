@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  newsapi-worker:
+    image: vramososuna/worker:latest 
+    container_name: newsapi-worker
+    environment:
+      - API_NAME=newsapi
+    env_file:
+      - .env
+    volumes:
+      - raw-data:/app/data/  # Almacena datos en el host
+    networks:
+      - mongo-net
+      - milvus-net
+
+  gnews-worker:
+    image: vramososuna/worker:latest 
+    container_name: gnews-worker
+    environment:
+      - API_NAME=gnews
+    env_file:
+      - .env
+    volumes:
+      - raw-data:/app/data/  # Almacena datos en el host
+    networks:
+      - mongo-net
+      - milvus-net
+
+  newsapiai-worker:
+    image: vramososuna/worker:latest 
+    container_name: newsapiai-worker
+    environment:
+      - API_NAME=newsapiai
+    env_file:
+      - .env
+    volumes:
+      - raw-data:/app/data/  # Almacena datos en el host
+    networks:
+      - mongo-net
+      - milvus-net
+
+networks:
+  mongo-net:
+    external: true
+  milvus-net:
+    external: true
+
+volumes:
+  raw-data:
+    name: raw-data
+    external: true
+
+
+    
