@@ -1,4 +1,5 @@
 docker build -f ./dockerfiles/starter-image -t vramososuna/mongo-starter .
+docker build -f ./dockerfiles/worker -t vramososuna/worker .
 docker build -f ./dockerfiles/extractor-image -t vramososuna/mongo-raw-extractor .
 docker build -f ./dockerfiles/Newsapiai -t vramososuna/newsapiai .
 docker build -f ./dockerfiles/Gnewsapi -t vramososuna/gnews .

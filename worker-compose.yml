@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   newsapi-worker:
-    image: vramososuna/worker:latest 
+    image: vramososuna/worker
     container_name: newsapi-worker
     environment:
       - API_NAME=newsapi
@@ -15,7 +15,7 @@ services:
       - milvus-net
 
   gnews-worker:
-    image: vramososuna/worker:latest 
+    image: vramososuna/worker
     container_name: gnews-worker
     environment:
       - API_NAME=gnews
@@ -28,7 +28,7 @@ services:
       - milvus-net
 
   newsapiai-worker:
-    image: vramososuna/worker:latest 
+    image: vramososuna/worker
     container_name: newsapiai-worker
     environment:
       - API_NAME=newsapiai
