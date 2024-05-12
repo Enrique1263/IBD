@@ -1,0 +1,11 @@
+FROM python:3.8-slim
+
+RUN pip install pymongo pymilvus sentence-transformers 
+
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2').save('sentence-transformers/all-MiniLM-L6-v2')"
+
+COPY ./src/worker.py /app/worker.py
+
+RUN mkdir /app/data
+
+CMD ["python", "-u", "/app/worker.py"]
