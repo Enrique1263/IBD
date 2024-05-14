@@ -21,7 +21,15 @@ def insert_mongo(docs):
     # if not, insert
     for doc in docs:
         if collection.find_one({'url': doc['url']}) is None:
-            collection.insert_one(doc)
+            doc_to_insert = {
+                'title': doc['title'],
+                'description': doc['description'],
+                'content': doc['content'],
+                'author': doc['author'],
+                'url': doc['url'],
+                'source': doc['source'],
+            }
+            collection.insert_one(doc_to_insert)
     client.close()
 
 def insert_milvus(docs):

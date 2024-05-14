@@ -54,7 +54,7 @@ services:
       - mongo-net
 
   jupyter:
-    image: vramososuna/jupyter-mongo:latest
+    image: vramososuna/jupyter-tester:latest
     ports:
       - '8888:8888'
     volumes:
