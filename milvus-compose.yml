@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  milvus:
+    image: milvusdb/milvus:latest
+    volumes:
+      - milvus-data:/var/lib/milvus/db
+      - milvus-conf:/etc/milvus
+    ports:
+      - "19530:19530"  # Puerto por defecto de Milvus
+      - "19121:19121"  # Puerto del servidor web de Milvus
+    environment:
+      - MILVUS_DB_PATH=/var/lib/milvus/db
+    networks:
+      - milvus-net
+
+  jupyter:
+    image: jupyter/base-notebook:latest
+    volumes:
+      - ./notebooks:/home/jovyan/work
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    networks:
+      - milvus-net
+    depends_on:
+      - milvus
+
+networks:
+  milvus-net:
+    driver: bridge
+
+volumes:
+  milvus-data:
+  milvus-conf:
