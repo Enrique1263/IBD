@@ -65,6 +65,16 @@ services:
       - "minio"
     networks:
       - milvus-net
+    
+  starter:
+    image: vramososuna/milvus-starter:latest
+    depends_on:
+      - standalone
+      - etcd
+      - minio
+    networks:
+      - milvus-net
+
 
   jupyter:
     image: vramososuna/jupyter-tester:latest

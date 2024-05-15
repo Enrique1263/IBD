@@ -1,0 +1,12 @@
+FROM python:3.9
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the requirements file and install the dependencies
+COPY ./src/starter_milvus.py .
+RUN pip install --upgrade pip
+RUN pip install pymilvus
+
+# Set the default command to run Jupyter Notebook
+CMD ["python", "-u", "starter_milvus.py"]

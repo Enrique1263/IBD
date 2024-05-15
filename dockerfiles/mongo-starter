@@ -1,6 +1,5 @@
 FROM python:3.9
 
-
 # Set the working directory
 WORKDIR /app
 
@@ -8,7 +7,6 @@ WORKDIR /app
 COPY ./src/starter.py .
 RUN pip install --upgrade pip
 RUN pip install pymongo
-
 
 # Set the default command to run Jupyter Notebook
 CMD ["python", "-u", "starter.py"]
