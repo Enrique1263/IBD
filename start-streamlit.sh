@@ -1,0 +1,1 @@
+docker run --network milvus-net --name streamlit -p 8501:8501 --rm vramososuna/user-milvus

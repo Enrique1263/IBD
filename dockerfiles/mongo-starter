@@ -4,9 +4,9 @@ FROM python:3.9
 WORKDIR /app
 
 # Copy the requirements file and install the dependencies
-COPY ./src/starter.py .
+COPY ./src/starter-mongo.py .
 RUN pip install --upgrade pip
 RUN pip install pymongo
 
 # Set the default command to run Jupyter Notebook
-CMD ["python", "-u", "starter.py"]
+CMD ["python", "-u", "starter-mongo.py"]

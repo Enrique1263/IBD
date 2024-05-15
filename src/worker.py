@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from pymilvus import MilvusClient
+from pymilvus import connections, Collection
 from sentence_transformers import SentenceTransformer
 from glob import glob
 import os
@@ -15,6 +15,12 @@ folder_name = f'/app/data/{apiname}'
 def insert_mongo(docs):
     connection_string = os.getenv('MONGO_CONNECTION_STRING', 'mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?replicaSet=rs0')
     client = MongoClient(connection_string)
+
+    collection_name = 'articles'
+    connections.connect("default", host="milvus-standalone", port="19530")
+    collection_milvus = Collection(name=collection_name)
+
+
     db = client['newsDB']
     collection = db['articles']
     # check if url already exists in collection
@@ -30,6 +36,20 @@ def insert_mongo(docs):
                 'source': doc['source'],
             }
             collection.insert_one(doc_to_insert)
+            milvus_doc = {
+                'url': doc['url'],
+                'title': doc['title'],
+                'description': doc['description'],
+                'source': doc['source'],
+                'embedding': doc['embedding']
+            }
+            
+            collection_milvus.insert([milvus_doc])
+
+
+
+
+
     client.close()
 
 def insert_milvus(docs):

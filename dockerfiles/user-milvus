@@ -1,0 +1,10 @@
+FROM python:3.8-slim
+
+RUN pip install pymilvus sentence-transformers streamlit
+
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2').save('sentence-transformers/all-MiniLM-L6-v2')"
+
+COPY ./src/Web_client.py /app/Web_client.py
+RUN mkdir /app/data
+
+CMD ["streamlit", "run", "/app/Web_client.py"]
