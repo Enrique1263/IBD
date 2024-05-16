@@ -81,120 +81,124 @@ def process_files(files):
         os.rename(file, file.replace('.json', '_processed.json'))
         file = file.replace('.json', '_processed.json')
         print(f'Processing {file}')
-        with open(file, 'r') as f:
-            articles = f.readlines()
+        try:
+            with open(file, 'r') as f:
+                articles = f.readlines()
 
-        articles = [json.loads(article) for article in articles]
+            articles = [json.loads(article) for article in articles]
 
-        docs = []
+            docs = []
 
-        print(f'Processing {len(articles)} articles')
+            print(f'Processing {len(articles)} articles')
 
-        if apiname == 'newsapi':
+            if apiname == 'newsapi':
 
-            texts = []
-            for article in articles:
-                string = f"{article['title']}. {article['description']}. {article['content']}"
-                texts.append(string)
+                texts = []
+                for article in articles:
+                    string = f"{article['title']}. {article['description']}. {article['content']}"
+                    texts.append(string)
 
-            print('Embedding texts')
+                print('Embedding texts')
 
-            embeddings = model.encode(texts)
+                embeddings = model.encode(texts)
 
-            print('Formatting articles')
+                print('Formatting articles')
 
-            for i, article in enumerate(articles):
-                new_article = {
-                    'api': 'newsapi',
-                    'title': article['title'],
-                    'description': article['description'],
-                    'content': article['content'],
-                    'author': article['author'],
-                    'publishedAt': article['publishedAt'],
-                    'url': article['url'],
-                    'source': article['source']['name'],
-                    'embedding': embeddings[i].tolist()
-                }
+                for i, article in enumerate(articles):
+                    new_article = {
+                        'api': 'newsapi',
+                        'title': article['title'],
+                        'description': article['description'],
+                        'content': article['content'],
+                        'author': article['author'],
+                        'publishedAt': article['publishedAt'],
+                        'url': article['url'],
+                        'source': article['source']['name'],
+                        'embedding': embeddings[i].tolist()
+                    }
 
-                docs.append(new_article)
-                
- 
-        elif apiname == 'gnews':
-                
-            texts = []
-            for article in articles:
-                string = f"{article['title']}. {article['description']}. {article['content']}"
-                texts.append(string)
-
-            print('Embedding texts')
-
-            embeddings = model.encode(texts)
-
-            print('Formatting articles')
-
-            for i, article in enumerate(articles):
-                new_article = {
-                    'api': 'gnews',
-                    'title': article['title'],
-                    'description': article['description'],
-                    'content': article['content'],
-                    'author': article['source']['name'],
-                    'publishedAt': article['publishedAt'],
-                    'url': article['url'],
-                    'source': article['source']['name'],
-                    'embedding': embeddings[i].tolist()
-                }
-
-                docs.append(new_article)
-
-        elif apiname == 'newsapiai':
+                    docs.append(new_article)
                     
-            texts = []
-            for article in articles:
-                string = f"{article['title']}. {article['body']}"
-                texts.append(string)
+    
+            elif apiname == 'gnews':
+                    
+                texts = []
+                for article in articles:
+                    string = f"{article['title']}. {article['description']}. {article['content']}"
+                    texts.append(string)
 
-            print('Embedding texts')
+                print('Embedding texts')
 
-            embeddings = model.encode(texts)
+                embeddings = model.encode(texts)
 
-            print('Formatting articles')
+                print('Formatting articles')
 
-            for i, article in enumerate(articles):
-                new_article = {
-                    'api': 'newsapiai',
-                    'title': article['title'],
-                    'description': article['body'][:100] + '...',
-                    'content': article['body'],
-                    'author': article['authors'],
-                    'publishedAt': article['dateTimePub'],
-                    'url': article['url'],
-                    'source': article['source']['title'],
-                    'embedding': embeddings[i].tolist()
-                }
+                for i, article in enumerate(articles):
+                    new_article = {
+                        'api': 'gnews',
+                        'title': article['title'],
+                        'description': article['description'],
+                        'content': article['content'],
+                        'author': article['source']['name'],
+                        'publishedAt': article['publishedAt'],
+                        'url': article['url'],
+                        'source': article['source']['name'],
+                        'embedding': embeddings[i].tolist()
+                    }
 
-                docs.append(new_article)
+                    docs.append(new_article)
 
-        else:
-            print('Invalid API name')
-            return
-        
-        print('Writing processed articles to file')
+            elif apiname == 'newsapiai':
+                        
+                texts = []
+                for article in articles:
+                    string = f"{article['title']}. {article['body']}"
+                    texts.append(string)
 
-        
+                print('Embedding texts')
 
-        
+                embeddings = model.encode(texts)
 
-        file_name = r'/app/data/processed/' + file.split('/')[-1]
+                print('Formatting articles')
 
-        with open(file_name, 'w') as f:
-            for article in docs:
-                json.dump(article, f, default=str)
-                f.write('\n')
+                for i, article in enumerate(articles):
+                    new_article = {
+                        'api': 'newsapiai',
+                        'title': article['title'],
+                        'description': article['body'][:100] + '...',
+                        'content': article['body'],
+                        'author': article['authors'],
+                        'publishedAt': article['dateTimePub'],
+                        'url': article['url'],
+                        'source': article['source']['title'],
+                        'embedding': embeddings[i].tolist()
+                    }
 
-        print('Inserting articles into database(s)')
+                    docs.append(new_article)
 
-        insert_db(docs)
+            else:
+                print('Invalid API name')
+                return
+            
+            print('Writing processed articles to file')
+
+            
+
+            
+
+            file_name = r'/app/data/processed/' + file.split('/')[-1]
+
+            with open(file_name, 'w') as f:
+                for article in docs:
+                    json.dump(article, f, default=str)
+                    f.write('\n')
+
+            print('Inserting articles into database(s)')
+
+            insert_db(docs)
+
+        except Exception as e:
+            continue
 
 
 if __name__ == '__main__':
