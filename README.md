@@ -2,7 +2,7 @@
 
 This repository serves as a comprehensive news collector, leveraging JSON-returning APIs. The codebase is designed for scalable deployment, both horizontally (utilizing multiple API keys) and vertically (utilizing multiple APIs).
 
-The primary objective of this project is to establish a robust news aggregation system capable of populating a database (MongoDB, currently in progress), with potential future applications. News articles are categorized by user-defined topics, enabling efficient API request management and topic-based data segregation.
+The primary objective of this project is to establish a robust news aggregation system capable of populating a database (MongoDB). News articles are categorized by user-defined topics, enabling efficient API request management and topic-based data segregation. Once all that is done, we take partial data and insert it into a vectorized database (Milvus), so we can ask for articles based on a topic, a phrase or what ever text context we provide.
 
 ## Gathering Structure
 
@@ -11,6 +11,8 @@ To enhance accessibility, this project is supported by containerization. The str
 - **dockerfiles**: Contains various dockerfiles utilized by the containers in case Docker Hub is down.
 - **collector-compose.yml (Collector)**: Creates containers for news collection, with one container per API image.
 - **mongo-compose.yml (MongoDB)**: Orchestrates containers for the MongoDB database. A replicaset of 3 mongodb instances. Also includes a jupyter notebook container to run commands in the replica-set if needed (as well as testing).
+- **milvus-compose.yml (Milvus)**: Creates the Milvus database for storing the vectorized data. Same as mongo-compose, it includes a jupyter notebook.
+- **worker-compose.ylm**: Poblates both databases, MongoDB with purely crude data (a bit modified in order to have the same extructure between API responses), Milvus with low weight informative data and the vectoricez information.
 - **requirements.txt**: Lists dependencies required for code execution.
 - **src**: Contains various .py files utilized by the images.
 - **.env (MUST BE CREATED BY THE USER FOLLOWING .env.example)**: Safely stores API keys to prevent exposure in the code. Can be modified by the user to select topics as well as timeframe for the extraction. Language determines the language of the articles and newsapi-ai tokes per api indicates teh number of call allows per apikey of that API. 
@@ -22,7 +24,9 @@ While it's feasible to run this system on a single machine, utilizing a cluster 
 
 Leveraging the RESTful nature of news APIs, data is acquired in JSON format, enabling seamless integration with MongoDB. Data scalability is achieved through multiple APIs and API keys, facilitating concurrent requests and higher request rates. Data availability is contingent upon API uptime.
 
-With MongoDB, data management is delegated to the database, necessitating sufficient replicas to match the pace of API data retrieval. Data retrieval can be facilitated using MongoDB interfaces such as Compass or Python library pymongo.  
+With MongoDB, data management is delegated to the database, necessitating sufficient replicas to match the pace of API data retrieval. Data retrieval can be facilitated using MongoDB interfaces such as Compass or Python library pymongo.
+
+For the Milvus part, not only is more efficient for vector and low weight data storege, it also provides the powerful tool of similarity-based search. In order to manage the large amount of documents, we use MinIO that loads in RAM only the necessary stuff. It can also be deployed via cluster and have the nodes dispersed across multiple units.
 
 ## Big Data Dimensions
 
@@ -39,10 +43,16 @@ Considering the 5 V's of Big Data:
 Useful Docker deployment commands:
 #### Initiate communication network for the whole infrastructure
 - docker network create mongo-net
-#### Initiate mongo replica-set
-- docker compose -f mongo-compose.yml up
+- docker network create milvus-net
 #### Initiate news collectors (mongo replica-set must be healthy)
 - docker compose -f collector-compose.yml up
+#### Initiate databases storage
+- docker compose -f mongo-compose.yml up
+- docker compose -f milvus-compose.yml up
+#### Initiate the worker
+- docker compose -f worker-compose.yml up
+#### Initiate streamlit (query purposes)
+- docker run --network milvus-net --name streamlit vramososuna/user-milvus
 #### Extract raw json data from the replica-set
 - docker run --env-file ./.env --network mongo-net --name raw-collector vramososuna/mongo-raw-extractor
 #### If an image is to be created for some reason
@@ -57,6 +67,9 @@ From Docker Hub https://hub.docker.com/search?q=vramososuna these images are use
 - vramososuna/gnews
 - vramososuna/newsapi
 - vramososuna/jupyter-mongo
+- vramososuna/milvus-starter
+- vramososuna/worker
+- vramososuna/user-milvus
 
 #### Usage
 In order to correctly run this application you will need to create an .env file that uses the same extructure as described in the .env.example file.
@@ -64,15 +77,19 @@ In order to correctly run this application you will need to create an .env file 
 
 ## Functionability
 
-The objective is to design a container-based digital infrastructure to support a system that works with Big Data. In this case, three MongoDB instances are deployed and configured to run on a replica set, providing redundancy and high availability. Storing data in persistent volumes ensures data durability beyond the lifecycle of the containers. These services are essential for storing and managing data collected from news sources. Then, the newsapi-collector, gnews-collector, newsapiai-collector are designed to connect to different APIs (NewsAPI, GNews, and NewsAPI.ai) to collect news. Each service has its own container, allowing for separation of responsibilities and scalability. Using .env files to configure these services facilitates customization and security by not hardcoding API keys in the code or container. The starter service plays an important role in the initial setup of the MongoDB database that is used to store the collected news data, where high availability and fault tolerance for the database is ensured. After verifying the existence of the database and creating the necessary collections, the script closes the connection to MongoDB. This is a good practice to free resources and avoid possible connection leaks. The service of jupyter provides a web-accessible Jupyter Notebook environment, allowing interactive analysis of the collected data. The inclusion of a Jupyter environment underlines the importance of data analysis in this project, facilitating the exploration and visualization of data stored in MongoDB.
+The objective is to design a container-based digital infrastructure to support a system that works with Big Data. In this case, three MongoDB instances are deployed and configured to run on a replica set, providing redundancy and high availability. Storing data in persistent volumes ensures data durability beyond the lifecycle of the containers. These services are essential for storing and managing data collected from news sources. Then, the newsapi-collector, gnews-collector, newsapiai-collector are designed to connect to different APIs (NewsAPI, GNews, and NewsAPI.ai) to collect news. Each service has its own container, allowing for separation of responsibilities and scalability. Using .env files to configure these services facilitates customization and security by not hardcoding API keys in the code or container. The starter service plays an important role in the initial setup of the MongoDB database that is used to store the collected news data, where high availability and fault tolerance for the database is ensured. After verifying the existence of the database and creating the necessary collections, the script closes the connection to MongoDB. This is a good practice to free resources and avoid possible connection leaks. The service of jupyter provides a web-accessible Jupyter Notebook environment, allowing interactive analysis of the collected data. The inclusion of a Jupyter environment underlines the importance of data analysis in this project, facilitating the exploration and visualization of data stored in MongoDB. For the Milvus, as well as with MongoDB we deployed and create the database needed, then shut the connection down.
 
-The news gathering services are adapted to the peculiarities of each API, such as the handling of rate limits or pagination of results, allowing then to process the raw data received and store the results in MongoDB. So, MongoDB acts as the centralized data store for this project (**Recolection**). The MongoDB replica set structure provides a robust solution for managing the data, ensuring its availability and consistency (**Storage**). Also, the Jupyter service provides a platform for data analysis, allowing users to explore and visualize the data collected directly from the MongoDB database. This is crucial for extracting insights and value from the collected data (**Data Analysis**). Finally, the use of an external Docker network (mongo-net) shared between all services facilitates efficient communication between containers, especially important to allow news gathering services to interact with MongoDB instances. The external network ensures that containers can find and communicate with each other no matter which node in the cluster they are running on.
+The news gathering services are adapted to the peculiarities of each API, such as the handling of rate limits or pagination of results, allowing then to process the raw data received and store the results in MongoDB. So, MongoDB acts as the centralized data store for this project (**Recolection**). The MongoDB replica set structure provides a robust solution for managing the data, ensuring its availability and consistency (**Storage**). Finally, the use of an external Docker network (mongo-net and milvus-net) shared between all services facilitates efficient communication between containers, especially important to allow news gathering services to interact with MongoDB instances and Milvus container. The external network ensures that containers can find and communicate with each other no matter which node in the cluster they are running on.
+
+Lastly, the query-based sistem is runing on Milvus, where part of the data is stored (for all the data got to MongoDB). Also, the Jupyter service provides a platform for data analysis, allowing users to explore and visualize the data collected directly from the MongoDB or Milvus database. This is crucial for extracting insights and value from the collected data (**Data Analysis**). In this practice, the main data analysis comes when searching information.
 
 **Availability and Reliability**
 
 - MongoDB Replica Set: Configuring the MongoDB server in a replica set is critical to ensure high availability and fault tolerance. In the event that one node fails, the other nodes can continue to operate, ensuring that the database remains accessible. In addition, replicas allow reading from secondary nodes, thus distributing the load of read operations.
 
 - Automatic Container Restart: The always-on restart policy in the container services configuration ensures that, if a container fails for any reason, Docker will attempt to restart it automatically, minimizing downtime.
+
+- Volumes: it ensures the data will not be lost if any problem with docker.
 
 **Scalability**
 
