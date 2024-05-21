@@ -17,6 +17,7 @@ To enhance accessibility, this project is supported by containerization. The str
 - **src**: Contains various .py files utilized by the images.
 - **.env (MUST BE CREATED BY THE USER FOLLOWING .env.example)**: Safely stores API keys to prevent exposure in the code. Can be modified by the user to select topics as well as timeframe for the extraction. Language determines the language of the articles and newsapi-ai tokes per api indicates teh number of call allows per apikey of that API. 
 - **notebooks**: Jupyter notebook files are saved here.
+- **raw-data**: Docker volume shared by workers and collectors to save and process raw API responses.
 
 While it's feasible to run this system on a single machine, utilizing a cluster of machines is recommended to accommodate scalability. For this project docker swarm was contemplated, but difficulty in node connections forced us to reduce the scale to one node.
 
@@ -41,32 +42,46 @@ Considering the 5 V's of Big Data:
 ## Commands & Use
 
 Useful Docker deployment commands:
-#### Initiate communication network for the whole infrastructure
-- docker network create mongo-net
-- docker network create milvus-net
-#### Initiate news collectors (mongo replica-set must be healthy)
-- docker compose -f collector-compose.yml up
+#### (If first time deploying) Create all images to be used in the infrastructure
+```bash
+bash build.sh
+```
+
+#### (If first time deploying) Initiate communication network for the whole infrastructure and create the shared volume for raw json files
+```bash
+bash net_vol_creation.sh
+```
 #### Initiate databases storage
-- docker compose -f mongo-compose.yml up
-- docker compose -f milvus-compose.yml up
-#### Initiate the worker
-- docker compose -f worker-compose.yml up
+```bash
+docker compose -f mongo-compose.yml up
+docker compose -f milvus-compose.yml up
+```
+#### (Once databases are healthy) Initiate the workers
+```bash
+docker compose -f worker-compose.yml up
+```
+#### Initiate the news collectors
+```bash
+docker compose -f collector-compose.yml up
+```
 #### Initiate streamlit (query purposes)
-- docker run --network milvus-net --name streamlit vramososuna/user-milvus
-#### Extract raw json data from the replica-set
-- docker run --env-file ./.env --network mongo-net --name raw-collector vramososuna/mongo-raw-extractor
-#### If an image is to be created for some reason
-- docker build -f 'path/to/file' -t 'corresponding name from bellow' .
+```bash
+bash start-streamlit.sh
+```
+#### If you want to stop everything
+```bash
+bash stop_everything.sh
+```
+**NOTE**: If you are using MacOS write ```sh``` instead of ```bash```.
 
 ----
 From Docker Hub https://hub.docker.com/search?q=vramososuna these images are used:
 
 - vramososuna/mongo-starter
-- vramososuna/mongo-raw-extractor
 - vramososuna/newsapiai
 - vramososuna/gnews
 - vramososuna/newsapi
-- vramososuna/jupyter-mongo
+- vramososuna/jupyter-tester
 - vramososuna/milvus-starter
 - vramososuna/worker
 - vramososuna/user-milvus
@@ -74,6 +89,12 @@ From Docker Hub https://hub.docker.com/search?q=vramososuna these images are use
 #### Usage
 In order to correctly run this application you will need to create an .env file that uses the same extructure as described in the .env.example file.
 (It is recommended for the _newsapiaitopics_ to be a number of topics divisible by the number of api keys you have).
+
+## Theoretical implementation vs real (local) implementation
+
+As it can be seen, we do no use any kind of already established distributed file system implementations, such as hdfs or spark, the reason being that part of our data processing involves creating text embeddings, which requieres calls to HuggingFaces's API. If we ended up using spark, we would have had to make a call to HuggingFace for each news article, which slows down the processing by a lot. Instead, what we did was creating separate folders inside the shared volume and having groups of workers for each api that access the folder constantly searching for unprocessed files. This system works in a way that when a worker accesses teh file, it immediately changes its name so that other workers cant access it, and given that each file is only processed one time, this file wont ever be processed again. Also there are around 1000 documents in each file, so all texts are sent to HuggingFace at the same time, saving lots of time and "emulating" in a way parallel processing and job distribution.
+
+It this was a real scenario, there would be copies of the embedding model's weights for each worker node, with its own gpus to make using spark viable and massively accelerating processing times.
 
 ## Functionability
 
@@ -101,7 +122,7 @@ Lastly, the query-based sistem is runing on Milvus, where part of the data is st
 
 - MongoDB Load Balancing and Optimized Queries: The MongoDB replica set not only serves for availability, but also enables effective load balancing, especially with read queries distributed across secondary nodes. Query optimization and proper indexing of collections are essential to maintain data access efficiency.
 
-- Control of Connections and Requests: The code implemented in the collection services carefully manages connections to external APIs and to MongoDB, using best practices such as connection reuse and proper handling of rate limits. This ensures efficient resource utilization and avoids potential outages due to API or database overload.
+- The possibility of having multiple workers and news collectors offers the opportunity of adding more processing power to the infrastructure, handling bigger loads of information fasters and more efficiently. 
 
 **Design Decisions and Quality Principles**
 
