@@ -122,7 +122,9 @@ Lastly, the query-based sistem is runing on Milvus, where part of the data is st
 
 - MongoDB Load Balancing and Optimized Queries: The MongoDB replica set not only serves for availability, but also enables effective load balancing, especially with read queries distributed across secondary nodes. Query optimization and proper indexing of collections are essential to maintain data access efficiency.
 
-- The possibility of having multiple workers and news collectors offers the opportunity of adding more processing power to the infrastructure, handling bigger loads of information fasters and more efficiently. 
+- The possibility of having multiple workers and news collectors offers the opportunity of adding more processing power to the infrastructure, handling bigger loads of information fasters and more efficiently.
+
+- Thanks to MinIO, in Milvus the data is loaded as it is needed, so no unnecessary memmory is being used.
 
 **Design Decisions and Quality Principles**
 
@@ -132,4 +134,4 @@ The design decisions made in the proposed infrastructure reflect a commitment to
 
 - Automation and Self-Healing: The use of restart policies and database auto-initialization design promote a self-healing infrastructure that minimizes manual intervention and increases resiliency.
 
-- Resource Optimization: The architecture enables efficient resource management, using the capabilities of Docker and MongoDB to adapt to varying workloads and optimize the use of the underlying infrastructure.
+- Resource Optimization: The architecture enables efficient resource management, using the capabilities of Docker, MongoDB and Milvus to adapt to varying workloads and optimize the use of the underlying infrastructure.
