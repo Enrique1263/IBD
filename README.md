@@ -114,7 +114,7 @@ Lastly, the query-based sistem is runing on Milvus, where part of the data is st
 
 **Scalability**
 
-- Docker Swarm and Overlay Networks: Although the proposed project does not explicitly use of Docker Swarm, the mention of an external network (mongo-net) suggests future readiness for a distributed environment, such as Docker Swarm. Docker Swarm facilitates horizontal scalability by allowing services to scale across multiple nodes in the cluster. Overlay networking supports communication between distributed containers on different hosts, maintaining network consistency.
+- Docker Swarm and Overlay Networks: Although the proposed project does not explicitly use of Docker Swarm, the mention of an external network (mongo-net) suggests future readiness for a distributed environment, such as Docker Swarm. Docker Swarm facilitates horizontal scalability by allowing services to scale across multiple nodes in the cluster. Overlay networking supports communication between distributed containers on different hosts, maintaining network consistency. This will also beneficial to Milvus if deployed as cluster.
 
 - Separate Services for Data Collection: The microservices architecture, with separate container services for different news sources, allows each data collection service to scale independently based on the specific load or demand of each API source.
 
