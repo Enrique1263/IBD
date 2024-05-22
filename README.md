@@ -88,7 +88,7 @@ From Docker Hub https://hub.docker.com/search?q=vramososuna these images are use
 
 #### Usage
 In order to correctly run this application you will need to create an .env file that uses the same extructure as described in the .env.example file.
-(It is recommended for the _newsapiaitopics_ to be a number of topics divisible by the number of api keys you have).
+(It is recommended for the _newsapiaitopics_ to be a number of topics divisible by the number of api keys you have and to avoid problems with the API of _NewsApi_ it is advisable to search at most one month ago).
 
 ## Theoretical implementation vs real (local) implementation
 
