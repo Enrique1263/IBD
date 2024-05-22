@@ -6,7 +6,10 @@ import pymilvus
 
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 pymilvus.connections.connect("default", host="milvus-standalone", port="19530")
+
 collection = pymilvus.Collection(name="articles")
+collection.load()
+
 
 
 # Web page configuration ---------------------------------------------------------------------------------------------------------------------------

@@ -53,7 +53,7 @@ services:
     networks:
       - mongo-net
 
-  jupyter:
+  jupyter-mongo:
     image: vramososuna/jupyter-tester:latest
     ports:
       - '8888:8888'

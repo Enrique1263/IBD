@@ -76,7 +76,7 @@ services:
       - milvus-net
 
 
-  jupyter:
+  jupyter-milvus:
     image: vramososuna/jupyter-tester:latest
     ports:
       - '8889:8888'
@@ -90,6 +90,7 @@ services:
       - standalone
       - etcd
       - minio
+    restart: always
 
 networks:
   milvus-net:

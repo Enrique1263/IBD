@@ -14,7 +14,7 @@ services:
       - milvus-net
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 3
 
   gnews-worker:
     image: vramososuna/worker
@@ -44,7 +44,7 @@ services:
       - milvus-net
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 3
 
 networks:
   mongo-net:

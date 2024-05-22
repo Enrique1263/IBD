@@ -27,15 +27,7 @@ def insert_db(docs):
     # if not, insert
     for doc in docs:
         if collection.find_one({'url': doc['url']}) is None:
-            doc_to_insert = {
-                'title': doc['title'],
-                'description': doc['description'],
-                'content': doc['content'],
-                'author': doc['author'],
-                'url': doc['url'],
-                'source': doc['source'],
-            }
-            collection.insert_one(doc_to_insert)
+            collection.insert_one(doc)
             milvus_doc = {
                 'url': doc['url'],
                 'title': doc['title'],
@@ -78,10 +70,11 @@ def process_files(files):
     '''
 
     for file in unprocessed_files:
-        os.rename(file, file.replace('.json', '_processed.json'))
-        file = file.replace('.json', '_processed.json')
-        print(f'Processing {file}')
         try:
+            os.rename(file, file.replace('.json', '_processed.json'))
+            file = file.replace('.json', '_processed.json')
+            print(f'Processing {file}')
+
             with open(file, 'r') as f:
                 articles = f.readlines()
 
