@@ -44,7 +44,7 @@ services:
     networks:
       - mongo-net
 
-  starter:
+  mongo-starter:
     image: vramososuna/mongo-starter:latest
     depends_on:
       - mongo1

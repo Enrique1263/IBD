@@ -66,7 +66,7 @@ services:
     networks:
       - milvus-net
     
-  starter:
+  milvus-starter:
     image: vramososuna/milvus-starter:latest
     depends_on:
       - standalone

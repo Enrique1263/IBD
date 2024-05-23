@@ -57,8 +57,7 @@ bash net_vol_creation.sh
 ```
 #### Initiate databases storage
 ```bash
-docker compose -f mongo-compose.yml up
-docker compose -f milvus-compose.yml up
+bash start_dbs.sh
 ```
 #### (Once databases are healthy) Initiate the workers
 ```bash
@@ -96,7 +95,7 @@ In order to correctly run this application you will need to create an .env file 
 
 ## Theoretical implementation vs real (local) implementation
 
-As it can be seen, we do no use any kind of already established distributed file system implementations, such as hdfs or spark, the reason being that part of our data processing involves creating text embeddings, which requieres calls to HuggingFaces's API. If we ended up using spark, we would have had to make a call to HuggingFace for each news article, which slows down the processing by a lot. Instead, what we did was creating separate folders inside the shared volume and having groups of workers for each api that access the folder constantly searching for unprocessed files. This system works in a way that when a worker accesses teh file, it immediately changes its name so that other workers cant access it, and given that each file is only processed one time, this file wont ever be processed again. Also there are around 1000 documents in each file, so all texts are sent to HuggingFace at the same time, saving lots of time and "emulating" in a way parallel processing and job distribution.
+As it can be seen, we do no use any kind of already established distributed file system implementations, such as hdfs or spark, the reason being that part of our data processing involves creating text embeddings, which requires calls to HuggingFaces's API. If we ended up using spark, we would have had to make a call to HuggingFace for each news article, which slows down the processing time by a lot. Instead, what we did was create separate folders inside the shared volume and have groups of workers for each api that access the folder constantly searching for unprocessed files. This system works in a way that when a worker accesses the file, it immediately changes its name so that other workers cant access it, and given that each file is only processed one time, this file wont ever be processed again. Also there are around 500-1000 documents in each file, so all texts are sent to HuggingFace at the same time, saving lots of time and "emulating" in a way parallel processing and job distribution.
 
 It this was a real scenario, there would be copies of the embedding model's weights for each worker node, with its own gpus to make using spark viable and massively accelerating processing times.
 
