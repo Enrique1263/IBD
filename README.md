@@ -4,6 +4,10 @@ This repository serves as a comprehensive news collector, leveraging JSON-return
 
 The primary objective of this project is to establish a robust news aggregation system capable of populating a database (MongoDB). News articles are categorized by user-defined topics, enabling efficient API request management and topic-based data segregation. Once all that is done, we take partial data and insert it into a vectorized database (Milvus), so we can ask for articles based on a topic, a phrase or what ever text context we provide.
 
+<p align="center">
+  <img src="./graph.png" alt="Infrastructure image" width="800" />
+</p>
+
 ## Gathering Structure
 
 To enhance accessibility, this project is supported by containerization. The structural components include:
