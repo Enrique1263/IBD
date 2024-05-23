@@ -14,7 +14,7 @@ services:
       - milvus-net
     deploy:
       mode: replicated
-      replicas: 3
+      replicas: 0
 
   gnews-worker:
     image: vramososuna/worker
@@ -29,7 +29,7 @@ services:
       - milvus-net
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 3
 
   newsapiai-worker:
     image: vramososuna/worker
